@@ -84,6 +84,9 @@ class WherewolfDao:
         
     def get_alive_nearby(self, username):
         """ returns a list of players nearby """
+        coords=self.get_location(username)
+        user_lat=coords["latitude"]
+        user_lng=coords["longitude"]
         conn = sqlite3.connect(self.dbname)
         with conn:
             c = self.conn.cursor()
@@ -91,17 +94,23 @@ class WherewolfDao:
             userid=int(c.fetchone()[0])
             c.execute("SELECT playerid FROM player WHERE userid=?", (userid,))
             playerid=int(c.fetchone()[0])
-            c.execute("SELECT lat, lng FROM player WHERE playerid=?", (playerid,))
-            coord=c.fetchone()
-            c.execute("SELECT gameid FROM player WHERE playerid=?", (playerid,))
-            gameid=c.fetchone()[0]
-            c.execute("SELECT playerid FROM player WHERE lat BETWEEN lat=? - .005 AND lng=? - .005 AND is_dead =0 \
-                      EXCEPT SELECT playerid FROM player WHERE playerid=?", (coord[0], coord[1], playerid))
-            nearby=c.fetchall()
-            if len(nearby)==1:
-                return nearby[0]
-            else:
-                return nearby
+            gameid=(c.execute("SELECT gameid FROM player WHERE playerid=?", (playerid,))).fetchone()[0]
+            has_user=(c.execute("SELECT COUNT(*) FROM user WHERE username=?", (username,))).fetchone()[0]
+            has_game_id=(c.execute("SELECT COUNT(*) FROM game WHERE gameid=?", (gameid,))).fetchone()[0]
+            all_ids=(c.execute("SELECT userid FROM player WHERE (userid!=(SELECT playerid FROM player JOIN user WHERE user.userid=player.userid\
+AND user.username=?)) AND (gameid=?) AND (is_dead!=1) AND ((((?-lat)*(?-lat))+((?-lng)*(?-lng)))<= 2500)", \
+                               (username, gameid, user_lat, user_lat, user_lng, user_lng)))
+            players=[]
+            for i in all_ids:
+                players.append(i[0])
+            result=[]
+            for i in players:
+                player=c.execute("SELECT username from user WHERE userid=?", (i,))
+                for j in player:
+                    username=j[0]
+                    username=username.encode("utf-8")
+                    result.append(username)
+            return result
         
     def add_item(self, username, itemname):
         """ adds a relationship to inventory and or increments quantity by 1"""
@@ -324,17 +333,4 @@ if __name__ == "__main__":
     print 'Logging in {} with {}'.format(username, incorrect_pass)
     print 'Result: {} '.format( dao.checkpassword(username, incorrect_pass ))
   
-    #dao.add_item('rfdickerson',"Blunderbuss")
-    #dao.add_item('rfdickerson',"Silver Knife")
-    #dao.get_items('rfdickerson')
-    #dao.get_players("t")
-    #dao.get_location('rfdickerson')
-    #dao.end_game(2)
-    #dao.start_game(2)
-    #dao.leave_game('rfdickerson')
-    #dao.set_location('rfdickerson',51,65)
-    #dao.create_game('rfdickerson')
-    #dao.award_achievement('rfdickerson','A hairy situation')
-    #dao.get_achievements('rfdickerson')
-    #dao.get_user_stats('rfdickerson')
-    print dao.get_alive_nearby('rfdickerson')
+
