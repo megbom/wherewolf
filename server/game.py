@@ -31,7 +31,10 @@ def attack_calc(wolfhp,wolfac, villhp, villac):
 def home_page():
     print 'hello'
     return 'Hello'
-
+@app.route('/healthcheck')
+def health_check():
+    return 'healthy'
+    
 @app.route('/v1/register', methods=["POST"])
 def create_user():
     print 'server got a registration request'
