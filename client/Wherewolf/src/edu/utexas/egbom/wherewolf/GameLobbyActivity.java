@@ -30,9 +30,9 @@ public class GameLobbyActivity extends Activity
 		
 		ArrayList<Player> arrayOfPlayers = new ArrayList<Player>();
 		
-		arrayOfPlayers.add(new Player(1, "Dinner", "", 5));
-		arrayOfPlayers.add(new Player(2,  "Post-Dinner","", 3));
-		arrayOfPlayers.add(new Player(3, "Supper","", 1));
+		arrayOfPlayers.add(new Player(1, "Dinner", "", 0));
+		arrayOfPlayers.add(new Player(2,  "Post-Dinner","", 0));
+		arrayOfPlayers.add(new Player(3, "Supper","", 0));
 		arrayOfPlayers.add(new Player(4, "Appetizer", "", 0));
 		
 		//Create the adapter to convert the array to views
