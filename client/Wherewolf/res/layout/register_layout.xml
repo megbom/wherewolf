@@ -16,12 +16,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/registrationtitle" />
-
-<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Registration" />
 <EditText
         android:id="@+id/usernameEditText"
         android:layout_width="wrap_content"
@@ -50,6 +44,20 @@
         android:textColor="#ffffff"
         android:hint="Password"
         android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/firstEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:hint="First Name"/>
+
+    <EditText
+        android:id="@+id/lastEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Last Name"/>
     
     <Button
         android:id="@+id/register_user_button"

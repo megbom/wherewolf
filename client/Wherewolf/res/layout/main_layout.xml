@@ -17,10 +17,6 @@
   android:layout_width="fill_parent"
   android:layout_height="300dp"
   class="edu.utexas.egbom.wherewolf.CircadianWidgetView"/>
-    <SeekBar
-        android1:id="@+id/daytime_seekbar"
-        android1:layout_width="match_parent"
-        android1:layout_height="wrap_content" />
 
     <ListView
         android1:id="@+id/mainplayers"

@@ -34,18 +34,20 @@ public class MainGameActivity extends Activity{
 		playerListView.setAdapter(adapter);
 		circadianWidget = (CircadianWidgetView) findViewById(R.id.circadian);
 		//Log.i(TAG, "made the widget");
-		final SeekBar seekbar = (SeekBar) findViewById(R.id.daytime_seekbar);
+		//final SeekBar seekbar = (SeekBar) findViewById(R.id.daytime_seekbar);
 		
 		
 		//get current time
 		Calendar cal = Calendar.getInstance();
-		currentTime = (cal.get(Calendar.HOUR_OF_DAY)*100) + cal.get(Calendar.MINUTE);
+		double currentTime = (cal.get(Calendar.HOUR_OF_DAY)*100) + cal.get(Calendar.MINUTE);
 		//Log.i(TAG, "current time is "+currentTime);
-		seekbar.setMax(2399);
-		seekbar.setProgress(currentTime);
-		seekbar.setOnSeekBarChangeListener(mySeekBarChangeListener());
+		double time = (double) currentTime/100;
+		circadianWidget.changeTime(time);
+		//seekbar.setMax(2399);
+		//seekbar.setProgress(currentTime);
+		//seekbar.setOnSeekBarChangeListener(mySeekBarChangeListener());
 	};
-	
+	/*
 	private OnSeekBarChangeListener mySeekBarChangeListener(){
 		return new OnSeekBarChangeListener(){
 
@@ -54,6 +56,7 @@ public class MainGameActivity extends Activity{
 					boolean fromUser) {
 				//get time to change circadian widget
 				double time = (double) progress/100;
+				
 				currentTime = progress;
 				circadianWidget.changeTime(time);
 				//Log.i(TAG, "current time is "+time);
@@ -68,4 +71,5 @@ public class MainGameActivity extends Activity{
 			}
 		};
 	}
+	*/
 }

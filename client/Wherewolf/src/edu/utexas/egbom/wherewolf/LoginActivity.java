@@ -1,19 +1,15 @@
 package edu.utexas.egbom.wherewolf;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class LoginActivity extends Activity {
@@ -29,12 +25,10 @@ public class LoginActivity extends Activity {
 		String strusername = textusername.getText().toString();
 		EditText textpassword = (EditText) findViewById(R.id.passwordText); 
 		String strpassword = textpassword.getText().toString();
-		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-		String storedusername = sharedPref.getString("username", "");
-		String storedpassword = sharedPref.getString("password", "");
+		
 		if  (strusername.equals("") && strpassword.equals("")) {
 		}else{
-			startActivity(login);
+			new SigninTask().execute();
 		}
 	}
 	
@@ -74,6 +68,54 @@ public class LoginActivity extends Activity {
 		 * onClick(View v) { // Perform action on click } });
 		 */
 	}
+	 class SigninTask extends AsyncTask<Void, Integer, SigninResponse> {
+
+	        @Override
+	        protected SigninResponse doInBackground(Void... request) {
+
+	            final EditText nameTV = (EditText) findViewById(R.id.usernameText);
+	            final EditText passTV = (EditText) findViewById(R.id.passwordText);
+	            
+	            String username = nameTV.getText().toString();
+	            String password = passTV.getText().toString();
+	            
+	            SigninRequest signinRequest = new SigninRequest(username, password);
+	            
+	            return signinRequest.execute(new WherewolfNetworking());
+	            
+	        }
+
+	        @Override
+	    	protected void onPostExecute(SigninResponse result) {
+
+	            Log.v("TAG", "Signed in user has player id " + result.getPlayerID());
+	            
+	            //final TextView errorText = (TextView) findViewById(R.id.error_text);
+	            
+	            if (result.getStatus().equals("success")) {
+	         
+	                final EditText nameTV = (EditText) findViewById(R.id.usernameText);
+	                final EditText passTV = (EditText) findViewById(R.id.passwordText);
+	                
+	                Log.i("MAIN_ACTIVITY: password test", passTV.getText().toString());
+	                
+	                WherewolfPreferences pref = new WherewolfPreferences(LoginActivity.this);
+	                pref.setCreds(nameTV.getText().toString(), passTV.getText().toString());
+
+	                Log.v("TAG", "Signing in");
+	                Intent intent = new Intent(LoginActivity.this, GameSelectActivity.class);
+	                startActivity(intent);
+
+	            } else {
+	                // do something with bad password
+	               Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_LONG).show();
+	            }
+
+	        }
+
+	        
+
+	    }
 
 	@Override
 	protected void onStart() {
