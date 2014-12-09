@@ -57,6 +57,22 @@ def create_user():
 #def isNight(time):
 #if 
 #@app.route
+@app.route("/v1/get_games", methods=["GET"])
+def get_games():
+    auth = request.authorization
+    username=auth.username
+    password=auth.password
+    response={}
+    response["status"]="failure"
+
+    if not dao.get_games():
+        response["status"] ="There are no games"
+        response["games"] = "None"
+    else:
+        response["status"] = "success"
+        response["games"] = str(dao.get_games())
+
+    return jsonify(response)
 @app.route("/v1/game", methods=["POST"])
 def create_game():
     description=request.form["description"]
